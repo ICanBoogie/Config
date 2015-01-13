@@ -1,0 +1,28 @@
+{
+	"name": "icanboogie/config",
+	"type": "library",
+	"description": "Synthesizes low-level configurations.",
+	"keywords": [ "config" ],
+	"homepage": "http://icanboogie.org/",
+	"license": "BSD-3-Clause",
+	"authors": [
+		{
+			"name": "Olivier Laviale",
+			"email": "olivier.laviale@gmail.com",
+			"homepage": "http://www.weirdog.com/",
+			"role" : "Developer"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/ICanBoogie/Config/issues",
+		"source": "https://github.com/ICanBoogie/Config"
+	},
+	"require": {
+		"php": ">=5.4.0",
+		"icanboogie/common": "~1.2",
+		"icanboogie/storage": "~1.0"
+	},
+	"autoload": {
+		"classmap": [ "lib/" ]
+	}
+}

@@ -1,0 +1,6 @@
+.idea
+.README.md.html
+composer.lock
+docs/
+tests/cache/
+vendor/
