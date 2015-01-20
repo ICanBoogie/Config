@@ -71,5 +71,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertNotSame($app1, $app2);
 		$this->assertSame($app2, $app3);
+		$this->assertNotSame($app3, $configs->synthesize('event', 'recursive merge'));
 	}
 }

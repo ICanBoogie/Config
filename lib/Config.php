@@ -144,14 +144,12 @@ class Config implements \ArrayAccess
 	 */
 	private function get_cache_key($name)
 	{
-		if ($this->cache_key)
+		if (!$this->cache_key)
 		{
-			return $this->cache_key;
+			$this->cache_key = substr(sha1(implode('|', array_keys($this->paths))), 0, 8);
 		}
 
-		$hash = substr(sha1(implode('|', array_keys($this->paths))), 0, 8);
-
-		return $this->cache_key = $hash . '_' . $name;
+		return $this->cache_key . '_' . $name;
 	}
 
 	/**
