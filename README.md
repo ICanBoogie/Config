@@ -1,4 +1,6 @@
-# Config [![Build Status](https://secure.travis-ci.org/ICanBoogie/Config.svg?branch=master)](http://travis-ci.org/ICanBoogie/Config)
+# Config
+
+[![Build Status][]](http://travis-ci.org/ICanBoogie/Config) [![Code Quality][]](https://scrutinizer-ci.com/g/ICanBoogie/Config/?branch=master)
 
 An API to synthesize low-level configuration.
 
@@ -195,7 +197,7 @@ clean the directory with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status](https://secure.travis-ci.org/ICanBoogie/Config.svg?branch=master)](http://travis-ci.org/ICanBoogie/Config)
+[![Build Status][]](http://travis-ci.org/ICanBoogie/Config)
 
 
 
@@ -209,6 +211,8 @@ ICanBoogie/Config is licensed under the New BSD License - See the [LICENSE](LICE
 
 
 
+[Build Status]: https://secure.travis-ci.org/ICanBoogie/Config.svg?branch=master
+[Code Quality]: https://scrutinizer-ci.com/g/ICanBoogie/Config/badges/quality-score.png?b=master
 [icanboogie/event]: https://github.com/ICanBoogie/Event
 [Config]: http://icanboogie.org/docs/class-ICanBoogie.Config.html
 [ICanBoogie]: https://github.com/ICanBoogie

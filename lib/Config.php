@@ -67,7 +67,7 @@ class Config implements \ArrayAccess
 	 * @param array $synthesizers
 	 * @param StorageInterface $cache A cache for synthesized configurations.
 	 */
-	public function __construct(array $paths, array $synthesizers=[], StorageInterface $cache=null)
+	public function __construct(array $paths, array $synthesizers = [], StorageInterface $cache = null)
 	{
 		$this->synthesizers = $synthesizers;
 		$this->cache = $cache;
@@ -187,7 +187,7 @@ class Config implements \ArrayAccess
 	 *
 	 * @throws \InvalidArgumentException if the path is empty.
 	 */
-	public function add($path, $weight=0)
+	public function add($path, $weight = 0)
 	{
 		if (!$path)
 		{
@@ -234,7 +234,7 @@ class Config implements \ArrayAccess
 				continue;
 			}
 
-			$fragments[$path . $filename] = self::isolated_require($pathname, $path);
+			$fragments[$path . $filename] = self::isolated_require($pathname);
 		}
 
 		return $fragments;
@@ -245,45 +245,39 @@ class Config implements \ArrayAccess
 	 *
 	 * @param string $name Name of the configuration to synthesize.
 	 * @param string|array $synthesizer Callback for the synthesis.
-	 * @param null|string $from[optional] If the configuration is a derivative $from is the name
+	 * @param null|string $from If the configuration is a derivative $from is the name
 	 * of the source configuration.
 	 *
 	 * @return mixed
 	 */
-	public function synthesize($name, $synthesizer, $from=null)
+	public function synthesize($name, $synthesizer, $from = null)
 	{
 		if (array_key_exists($name, $this->synthesized))
 		{
 			return $this->synthesized[$name];
 		}
 
-		if (!$from)
-		{
-			$from = $name;
-		}
-
 		$cache = $this->cache;
+		$cache_key = $this->get_cache_key($name);
 
 		if ($cache)
 		{
-			$cache_key = $this->get_cache_key($name);
 			$config = $cache->retrieve($cache_key);
 
-			if ($config === null)
+			if ($config !== null)
 			{
-				$config = $this->synthesize_for_real($from, $synthesizer);
-
-				$cache->store($cache_key, $config);
+				return $this->synthesized[$name] = $config;
 			}
 		}
-		else
+
+		$config = $this->synthesize_for_real($from ?: $name, $synthesizer);
+
+		if ($cache)
 		{
-			$config = $this->synthesize_for_real($from, $synthesizer);
+			$cache->store($cache_key, $config);
 		}
 
-		$this->synthesized[$name] = $config;
-
-		return $config;
+		return $this->synthesized[$name] = $config;
 	}
 
 	private function synthesize_for_real($name, $synthesizer)
