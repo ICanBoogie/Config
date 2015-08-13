@@ -11,7 +11,7 @@
 
 namespace ICanBoogie;
 
-use ICanBoogie\Storage\StorageInterface;
+use ICanBoogie\Storage\Storage;
 
 /**
  * Provides synthesized low-level configurations.
@@ -55,7 +55,7 @@ class Config implements \ArrayAccess
 	/**
 	 * A cache to store and retrieve the synthesized configurations.
 	 *
-	 * @var StorageInterface
+	 * @var Storage
 	 */
 	public $cache;
 
@@ -65,9 +65,9 @@ class Config implements \ArrayAccess
 	 * @param array $paths An array of key/value pairs where _key_ is the path to a config
 	 * directory and _value_ is the weight of that path.
 	 * @param array $synthesizers
-	 * @param StorageInterface $cache A cache for synthesized configurations.
+	 * @param Storage $cache A cache for synthesized configurations.
 	 */
-	public function __construct(array $paths, array $synthesizers = [], StorageInterface $cache = null)
+	public function __construct(array $paths, array $synthesizers = [], Storage $cache = null)
 	{
 		$this->synthesizers = $synthesizers;
 		$this->cache = $cache;
