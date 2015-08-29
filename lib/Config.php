@@ -130,7 +130,13 @@ class Config implements \ArrayAccess
 
 		list($synthesizer, $from) = $this->synthesizers[$id] + [ 1 => $id ];
 
-		return $this->synthesize($id, $synthesizer, $from);
+		$started_at = microtime(true);
+
+		$config = $this->synthesize($id, $synthesizer, $from);
+
+		ConfigProfiler::add($started_at, $id, $synthesizer);
+
+		return $config;
 	}
 
 	private $cache_key;
