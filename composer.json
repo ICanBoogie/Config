@@ -17,10 +17,11 @@
 		"issues": "https://github.com/ICanBoogie/Config/issues",
 		"source": "https://github.com/ICanBoogie/Config"
 	},
+	"minimum-stability": "dev",
 	"require": {
 		"php": ">=5.5.0",
 		"icanboogie/common": "^1.2.2",
-		"icanboogie/storage": "^1.1.1"
+		"icanboogie/storage": "^1.1.1|^2.0.0"
 	},
 	"autoload": {
 		"classmap": [ "lib/" ]
