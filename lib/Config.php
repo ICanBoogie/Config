@@ -22,7 +22,7 @@ class Config implements \ArrayAccess
 
 	static private function isolated_require($__file__)
 	{
-		if (array_key_exists($__file__, self::$require_cache))
+		if (isset(self::$require_cache[$__file__]))
 		{
 			return self::$require_cache[$__file__];
 		}
