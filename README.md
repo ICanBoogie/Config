@@ -1,6 +1,11 @@
 # Config
 
-[![Build Status][]](http://travis-ci.org/ICanBoogie/Config) [![Code Quality][]](https://scrutinizer-ci.com/g/ICanBoogie/Config/?branch=master)
+[![Release](https://img.shields.io/packagist/v/ICanBoogie/config.svg)](https://packagist.org/packages/icanboogie/config)
+[![Build Status](https://img.shields.io/travis/ICanBoogie/Config.svg)](http://travis-ci.org/ICanBoogie/Config)
+[![HHVM](https://img.shields.io/hhvm/icanboogie/config.svg)](http://hhvm.h4cc.de/package/icanboogie/config)
+[![Code Quality](https://img.shields.io/scrutinizer/g/ICanBoogie/Config.svg)](https://scrutinizer-ci.com/g/ICanBoogie/Config)
+[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Config.svg)](https://coveralls.io/r/ICanBoogie/Config)
+[![Packagist](https://img.shields.io/packagist/dt/icanboogie/config.svg)](https://packagist.org/packages/icanboogie/config)
 
 An API to synthesize low-level configuration.
 
@@ -128,7 +133,7 @@ $config = new Config($paths, [
 
 Caching synthesized configurations removes the cost of synthesizing configurations by reusing the
 result of a previous synthesis. To enable caching, you just need to provide a cache implementing
-the [StorageInterface][].
+[Storage][].
 
 ```php
 <?php
@@ -197,7 +202,8 @@ clean the directory with the `make clean` command.
 
 The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
-[![Build Status][]](http://travis-ci.org/ICanBoogie/Config)
+[![Build Status](https://img.shields.io/travis/ICanBoogie/Config.svg)](http://travis-ci.org/ICanBoogie/Config)
+[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Config.svg)](https://coveralls.io/r/ICanBoogie/Config)
 
 
 
@@ -205,15 +211,14 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 
 ## License
 
-ICanBoogie/Config is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
+**icanboogie/config** is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
 
 
 
 
 
-[Build Status]: https://secure.travis-ci.org/ICanBoogie/Config.svg?branch=master
-[Code Quality]: https://scrutinizer-ci.com/g/ICanBoogie/Config/badges/quality-score.png?b=master
 [icanboogie/event]: https://github.com/ICanBoogie/Event
-[Config]: http://icanboogie.org/docs/class-ICanBoogie.Config.html
-[ICanBoogie]: https://github.com/ICanBoogie
-[StorageInterface]: http://icanboogie.org/docs/class-ICanBoogie.Storage.StorageInterface.html
+[ICanBoogie]:       https://github.com/ICanBoogie
+
+[Config]:     http://api.icanboogie.org/config/1.1/class-ICanBoogie.Config.html
+[Storage]:    http://api.icanboogie.org/storage/2.0/class-ICanBoogie.Storage.Storage.html

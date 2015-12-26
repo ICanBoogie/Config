@@ -21,9 +21,11 @@
 	"require": {
 		"php": ">=5.5.0",
 		"icanboogie/common": "^1.2.2",
-		"icanboogie/storage": "^1.1.1|^2.0.0"
+		"icanboogie/storage": "^2.0.0"
 	},
 	"autoload": {
-		"classmap": [ "lib/" ]
+		"psr-4": {
+			"ICanBoogie\\": "lib"
+		}
 	}
 }

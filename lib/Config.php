@@ -20,14 +20,14 @@ class Config implements \ArrayAccess
 {
 	static private $require_cache = [];
 
-	static private function isolated_require($__file__)
+	static private function isolated_require($__FILE__)
 	{
-		if (isset(self::$require_cache[$__file__]))
+		if (isset(self::$require_cache[$__FILE__]))
 		{
-			return self::$require_cache[$__file__];
+			return self::$require_cache[$__FILE__];
 		}
 
-		return self::$require_cache[$__file__] = require $__file__;
+		return self::$require_cache[$__FILE__] = require $__FILE__;
 	}
 
 	/**
@@ -139,6 +139,9 @@ class Config implements \ArrayAccess
 		return $config;
 	}
 
+	/**
+	 * @var string
+	 */
 	private $cache_key;
 
 	/**
