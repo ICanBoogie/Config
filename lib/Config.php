@@ -11,6 +11,7 @@
 
 namespace ICanBoogie;
 
+use ICanBoogie\Config\NoFragmentDefined;
 use ICanBoogie\Storage\Storage;
 
 /**
@@ -289,13 +290,19 @@ class Config implements \ArrayAccess
 		return $this->synthesized[$name] = $config;
 	}
 
+	/**
+	 * @param string $name
+	 * @param callable $synthesizer
+	 *
+	 * @return mixed
+	 */
 	private function synthesize_for_real($name, $synthesizer)
 	{
 		$fragments = $this->get_fragments($name);
 
 		if (!$fragments)
 		{
-			return null;
+			throw new NoFragmentDefined($name);
 		}
 
 		if ($synthesizer == 'merge')

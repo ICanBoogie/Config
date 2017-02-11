@@ -27,10 +27,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		];
 	}
 
-	public function test_synthesize_undefined()
+	/**
+	 * @expectedException \ICanBoogie\Config\NoFragmentDefined
+	 */
+	public function test_should_throw_exception_on_undefined_fragment()
 	{
 		$configs = new Config(self::$paths);
-		$this->assertNull($configs->synthesize('core', 'merge'));
+		$configs->synthesize(uniqid(), 'merge');
 	}
 
 	public function test_synthesize_with_array_merge()

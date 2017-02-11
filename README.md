@@ -44,9 +44,11 @@ The following example demonstrates how a closure can be used to synthesize multi
 $config = $config->synthesize('core', function(array $fragments) {
 
 	return call_user_func_array('ICanBoogie\array_merge_recursive', $fragments);
-	
+
 });
 ```
+
+The exception [NoFragmentDefined][] is thrown when no fragment of a specified type is defined.
 
 
 
@@ -220,5 +222,6 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 [icanboogie/event]: https://github.com/ICanBoogie/Event
 [ICanBoogie]:       https://github.com/ICanBoogie
 
-[Config]:     http://api.icanboogie.org/config/1.1/class-ICanBoogie.Config.html
-[Storage]:    http://api.icanboogie.org/storage/2.0/class-ICanBoogie.Storage.Storage.html
+[Config]:            https://icanboogie.org/api/config/1.1/class-ICanBoogie.Config.html
+[Storage]:           https://icanboogie.org/api/storage/2.0/class-ICanBoogie.Storage.Storage.html
+[NoFragmentDefined]: https://icanboogie.org/api/config/master/class-ICanBoogie.NoFragmentDefined.html
