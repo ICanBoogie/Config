@@ -37,21 +37,21 @@ class Config implements \ArrayAccess
 	 *
 	 * @var array
 	 */
-	protected $paths = [];
+	private $paths = [];
 
 	/**
 	 * Callbacks to synthesize the configurations.
 	 *
 	 * @var array
 	 */
-	protected $synthesizers = [];
+	private $synthesizers = [];
 
 	/**
 	 * Synthesized configurations.
 	 *
 	 * @var array
 	 */
-	protected $synthesized = [];
+	private $synthesized = [];
 
 	/**
 	 * A cache to store and retrieve the synthesized configurations.
