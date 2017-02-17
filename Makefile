@@ -1,7 +1,7 @@
 # customization
 
 PACKAGE_NAME = icanboogie/config
-PACKAGE_VERSION = 1.1.0
+PACKAGE_VERSION = 1.2
 
 # do not edit the following lines
 

@@ -1,4 +1,4 @@
-composer.lock
 build
-tests/cache/
-vendor/
+composer.lock
+tests/cache
+vendor
