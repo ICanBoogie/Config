@@ -32,6 +32,29 @@ directories and are usually named after the config they are used to synthesize.
 
 
 
+## The configuration
+
+The configuration is represented by a [Config][] instance, which is used as an array to access
+specific configurations.
+
+The following example demonstrates how to obtain the configuration `routes`: 
+
+```php
+<?php
+
+/* @var \ICanBoogie\Config $config */
+
+$routing_config = $config['routes'];
+```
+
+A [NoSynthesizerDefined][] exception is thrown if there is no synthesizer defined for a
+configuration. A [NoFragmentDefined][] exception is thrown if there is no fragment defined for a
+configuration.
+
+
+
+
+
 ## Synthesizing a configuration
 
 The `synthesize()` method of the [Config][] instance is used to synthesize a configuration.
@@ -130,7 +153,7 @@ $config = new Config($paths, [
 
 
 
-	
+
 ## Caching synthesized configurations
 
 Caching synthesized configurations removes the cost of synthesizing configurations by reusing the
@@ -186,8 +209,8 @@ cloned with the following command line:
 
 ## Documentation
 
-The package is documented as part of the [ICanBoogie](http://icanboogie.org/) framework
-[documentation](http://icanboogie.org/docs/). You can generate the documentation for the package
+The package is documented as part of the [ICanBoogie](https://icanboogie.org/) framework
+[documentation](https://icanboogie.org/docs/). You can generate the documentation for the package
 and its dependencies with the `make doc` command. The documentation is generated in the `docs`
 directory. [ApiGen](http://apigen.org/) is required. You can later clean the directory with
 the `make clean` command.
@@ -222,6 +245,7 @@ The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
 [icanboogie/event]: https://github.com/ICanBoogie/Event
 [ICanBoogie]:       https://github.com/ICanBoogie
 
-[Config]:            https://icanboogie.org/api/config/1.1/class-ICanBoogie.Config.html
-[Storage]:           https://icanboogie.org/api/storage/2.0/class-ICanBoogie.Storage.Storage.html
-[NoFragmentDefined]: https://icanboogie.org/api/config/master/class-ICanBoogie.NoFragmentDefined.html
+[Config]:               https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.html
+[NoFragmentDefined]:    https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.NoFragmentDefined.html
+[NoSynthesizerDefined]: https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.NoSynhtesizerDefined.html
+[Storage]:              https://icanboogie.org/api/storage/2.0/class-ICanBoogie.Storage.Storage.html

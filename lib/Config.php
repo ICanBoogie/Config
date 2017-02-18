@@ -12,6 +12,7 @@
 namespace ICanBoogie;
 
 use ICanBoogie\Config\NoFragmentDefined;
+use ICanBoogie\Config\NoSynthesizerDefined;
 use ICanBoogie\Storage\Storage;
 
 /**
@@ -126,7 +127,7 @@ class Config implements \ArrayAccess
 
 		if (empty($this->synthesizers[$id]))
 		{
-			throw new \InvalidArgumentException("There is no constructor defined to build the $id config.");
+			throw new NoSynthesizerDefined($id);
 		}
 
 		list($synthesizer, $from) = $this->synthesizers[$id] + [ 1 => $id ];

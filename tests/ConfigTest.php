@@ -28,6 +28,16 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
+	 * @expectedException \ICanBoogie\Config\NoSynthesizerDefined
+	 */
+	public function test_should_throw_exception_on_undefined_synthesizer()
+	{
+		$name = 'container';
+		$configs = new Config(self::$paths);
+		$configs[$name];
+	}
+
+	/**
 	 * @expectedException \ICanBoogie\Config\NoFragmentDefined
 	 */
 	public function test_should_throw_exception_on_undefined_fragment()
