@@ -24,8 +24,8 @@
 	"prefer-dist": true,
 	"require": {
 		"php": ">=5.5",
-		"icanboogie/common": "^1.2",
-		"icanboogie/storage": "^2.0 | ^3.0"
+		"icanboogie/common": "^1.2|^2.0",
+		"icanboogie/storage": "^2.0|^3.0"
 	},
 	"autoload": {
 		"psr-4": {
