@@ -11,26 +11,20 @@
 
 namespace ICanBoogie\Config;
 
+use LogicException;
+use Throwable;
+
 /**
  * Exception thrown in attempt to build a configuration without synthesizer defined.
  */
-class NoSynthesizerDefined extends \LogicException
+class NoSynthesizerDefined extends LogicException
 {
-	/**
-	 * @param string $id
-	 * @param \Exception|null $previous
-	 */
-	public function __construct($id, \Exception $previous = null)
+	public function __construct(string $id, Throwable $previous = null)
 	{
 		parent::__construct($this->format_message($id), 500, $previous);
 	}
 
-	/**
-	 * @param $id
-	 *
-	 * @return string
-	 */
-	protected function format_message($id)
+	private function format_message(string $id): string
 	{
 		return "There is no synthesizer defined to build configuration `$id`."
 			. " (https://icanboogie.org/docs/4.0/config#declaring-synthesizers)";

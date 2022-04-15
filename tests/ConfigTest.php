@@ -9,15 +9,19 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie;
+namespace Test\ICanBoogie;
 
+use ICanBoogie\Config;
+use ICanBoogie\Config\NoFragmentDefined;
+use ICanBoogie\Config\NoSynthesizerDefined;
 use ICanBoogie\Storage\FileStorage;
+use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+final class ConfigTest extends TestCase
 {
-	static private $paths;
+	static private array $paths;
 
-	static public function setupBeforeClass()
+	static public function setupBeforeClass(): void
 	{
 		self::$paths = [
 
@@ -27,26 +31,22 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		];
 	}
 
-	/**
-	 * @expectedException \ICanBoogie\Config\NoSynthesizerDefined
-	 */
-	public function test_should_throw_exception_on_undefined_synthesizer()
+	public function test_should_throw_exception_on_undefined_synthesizer(): void
 	{
 		$name = 'container';
 		$configs = new Config(self::$paths);
+		$this->expectException(NoSynthesizerDefined::class);
 		$configs[$name];
 	}
 
-	/**
-	 * @expectedException \ICanBoogie\Config\NoFragmentDefined
-	 */
-	public function test_should_throw_exception_on_undefined_fragment()
+	public function test_should_throw_exception_on_undefined_fragment(): void
 	{
 		$configs = new Config(self::$paths);
+		$this->expectException(NoFragmentDefined::class);
 		$configs->synthesize(uniqid(), 'merge');
 	}
 
-	public function test_synthesize_with_array_merge()
+	public function test_synthesize_with_array_merge(): void
 	{
 		$configs = new Config(self::$paths);
 
@@ -62,7 +62,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		], $configs->synthesize('app', 'recursive merge'));
 	}
 
-	public function test_states()
+	public function test_states(): void
 	{
 		$configs = new Config([ __DIR__ . '/fixtures/config01' => 0 ]);
 		$app1 = $configs->synthesize('app', 'recursive merge');
@@ -74,7 +74,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 		$this->assertSame($app2, $app3);
 	}
 
-	public function test_states_with_cache()
+	public function test_states_with_cache(): void
 	{
 		$configs = new Config([ __DIR__ . '/fixtures/config01' => 0 ], [], new FileStorage(__DIR__ . '/cache'));
 		$app1 = $configs->synthesize('app', 'recursive merge');

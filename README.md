@@ -37,7 +37,7 @@ directories and are usually named after the config they are used to synthesize.
 The configuration is represented by a [Config][] instance, which is used as an array to access
 specific configurations.
 
-The following example demonstrates how to obtain the configuration `routes`: 
+The following example demonstrates how to obtain the configuration `routes`:
 
 ```php
 <?php
@@ -89,7 +89,7 @@ the following code examples are equivalent:
 $core_config = $config->synthesize('core', function(array $fragments) {
 
 	return call_user_func_array('ICanBoogie\array_merge_recursive', $fragments);
-	
+
 });
 ```
 
@@ -107,7 +107,7 @@ $core_config = $config->synthesize('core', 'merge recursive');
 
 Synthesizers can be defined for each configuration, they are used when the config collection is
 used as an array:
- 
+
 ```
 <?php
 
@@ -171,14 +171,6 @@ $config = new Config($paths, $synthesizers, $cache);
 
 
 ----------
-
-
-
-
-
-## Requirements
-
-The package requires PHP 5.5 or later.
 
 
 

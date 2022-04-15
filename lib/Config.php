@@ -11,21 +11,24 @@
 
 namespace ICanBoogie;
 
+use ArrayAccess;
 use ICanBoogie\Config\NoFragmentDefined;
 use ICanBoogie\Config\NoSynthesizerDefined;
 use ICanBoogie\Storage\Storage;
+use InvalidArgumentException;
+
+use function array_merge;
 
 /**
  * Provides synthesized low-level configurations.
  */
-class Config implements \ArrayAccess
+class Config implements ArrayAccess
 {
-	static private $require_cache = [];
+	static private array $require_cache = [];
 
 	static private function isolated_require($__FILE__)
 	{
-		if (isset(self::$require_cache[$__FILE__]))
-		{
+		if (isset(self::$require_cache[$__FILE__])) {
 			return self::$require_cache[$__FILE__];
 		}
 
@@ -38,42 +41,29 @@ class Config implements \ArrayAccess
 	 *
 	 * @var array
 	 */
-	private $paths = [];
-
-	/**
-	 * Callbacks to synthesize the configurations.
-	 *
-	 * @var array
-	 */
-	private $synthesizers = [];
+	private array $paths = [];
 
 	/**
 	 * Synthesized configurations.
 	 *
 	 * @var array
 	 */
-	private $synthesized = [];
-
-	/**
-	 * A cache to store and retrieve the synthesized configurations.
-	 *
-	 * @var Storage
-	 */
-	public $cache;
+	private array $synthesized = [];
 
 	/**
 	 * Initialize the {@link $paths}, {@link $synthesizers}, and {@link $cache} properties.
 	 *
-	 * @param array $paths An array of key/value pairs where _key_ is the path to a config
-	 * directory and _value_ is the weight of that path.
+	 * @param array<string, int> $paths
+	 *     An array of key/value pairs where _key_ is the path to a config directory and
+	 *     _value_ is the weight of that path.
 	 * @param array $synthesizers
-	 * @param Storage $cache A cache for synthesized configurations.
+	 * @param Storage|null $cache A cache for synthesized configurations.
 	 */
-	public function __construct(array $paths, array $synthesizers = [], Storage $cache = null)
-	{
-		$this->synthesizers = $synthesizers;
-		$this->cache = $cache;
-
+	public function __construct(
+		array $paths,
+		private readonly array $synthesizers = [],
+		public ?Storage $cache = null
+	) {
 		$this->add($paths);
 	}
 
@@ -82,7 +72,7 @@ class Config implements \ArrayAccess
 	 *
 	 * @throws OffsetNotWritable in attempt to set a configuration.
 	 */
-	public function offsetSet($offset, $value)
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		throw new OffsetNotWritable([ $offset, $this ]);
 	}
@@ -90,13 +80,11 @@ class Config implements \ArrayAccess
 	/**
 	 * Checks if a config has been synthesized.
 	 *
-	 * @param string $id The identifier of the config.
-	 *
-	 * @return bool `true` if the config has been synthesized, `false` otherwise.
+	 * @param string $offset A config identifier.
 	 */
-	public function offsetExists($id)
+	public function offsetExists(mixed $offset): bool
 	{
-		return isset($this->synthesized[$id]);
+		return isset($this->synthesized[$offset]);
 	}
 
 	/**
@@ -104,7 +92,7 @@ class Config implements \ArrayAccess
 	 *
 	 * @throws OffsetNotWritable in attempt to unset an offset.
 	 */
-	public function offsetUnset($offset)
+	public function offsetUnset(mixed $offset): void
 	{
 		throw new OffsetNotWritable([ $offset, $this ]);
 	}
@@ -112,53 +100,37 @@ class Config implements \ArrayAccess
 	/**
 	 * Returns the specified synthesized configuration.
 	 *
-	 * @param string $id The identifier of the config.
+	 * @param string $offset A config identifier.
 	 *
-	 * @return mixed
-	 *
-	 * @throws \InvalidArgumentException in attempt to obtain an undefined config.
+	 * @throws InvalidArgumentException in attempt to obtain an undefined config.
 	 */
-	public function offsetGet($id)
+	public function offsetGet(mixed $offset): mixed
 	{
-		if ($this->offsetExists($id))
-		{
-			return $this->synthesized[$id];
+		if ($this->offsetExists($offset)) {
+			return $this->synthesized[$offset];
 		}
 
-		if (empty($this->synthesizers[$id]))
-		{
-			throw new NoSynthesizerDefined($id);
-		}
+		$this->synthesizers[$offset] ?? throw new NoSynthesizerDefined($offset);
 
-		list($synthesizer, $from) = $this->synthesizers[$id] + [ 1 => $id ];
+		[ $synthesizer, $from ] = $this->synthesizers[$offset] + [ 1 => $offset ];
 
 		$started_at = microtime(true);
 
-		$config = $this->synthesize($id, $synthesizer, $from);
+		$config = $this->synthesize($offset, $synthesizer, $from);
 
-		ConfigProfiler::add($started_at, $id, $synthesizer);
+		ConfigProfiler::add($started_at, $offset, $synthesizer);
 
 		return $config;
 	}
 
-	/**
-	 * @var string
-	 */
-	private $cache_key;
+	private ?string $cache_key = null;
 
 	/**
 	 * Build a cache key according to the current paths and the config name.
-	 *
-	 * @param string $name
-	 *
-	 * @return string
 	 */
-	private function get_cache_key($name)
+	private function get_cache_key(string $name): string
 	{
-		if (!$this->cache_key)
-		{
-			$this->cache_key = substr(sha1(implode('|', array_keys($this->paths))), 0, 8);
-		}
+		$this->cache_key ??= substr(sha1(implode('|', array_keys($this->paths))), 0, 8);
 
 		return $this->cache_key . '_' . $name;
 	}
@@ -168,7 +140,7 @@ class Config implements \ArrayAccess
 	 *
 	 * The method is usually called after the config paths have been modified.
 	 */
-	protected function revoke()
+	private function revoke(): void
 	{
 		$this->synthesized = [];
 		$this->cache_key = null;
@@ -193,26 +165,24 @@ class Config implements \ArrayAccess
 	 * ]);
 	 * </pre>
 	 *
-	 * @param string|array $path
+	 * @param array<string, int>|string $path
+	 *     An array of key/value pairs where _key_ is the path to a config directory and
+	 *     _value_ is the weight of that path.
 	 * @param int $weight Weight of the path. The argument is discarded if `$path` is an array.
 	 *
-	 * @throws \InvalidArgumentException if the path is empty.
+	 * @throws InvalidArgumentException if the path is empty.
 	 */
-	public function add($path, $weight = 0)
+	public function add(array|string $path, int $weight = 0)
 	{
-		if (!$path)
-		{
-			throw new \InvalidArgumentException('$path is empty.');
+		if (!$path) {
+			throw new InvalidArgumentException('$path is empty.');
 		}
 
 		$paths = $this->paths;
 
-		if (is_array($path))
-		{
+		if (is_array($path)) {
 			$paths = array_merge($paths, $path);
-		}
-		else
-		{
+		} else {
 			$paths[$path] = $weight;
 		}
 
@@ -230,18 +200,16 @@ class Config implements \ArrayAccess
 	 * @return array Where _key_ is the pathname to the fragment file and _value_ the value
 	 * returned when the file was required.
 	 */
-	public function get_fragments($name)
+	public function get_fragments(string $name): array
 	{
 		$fragments = [];
 		$filename = $name . '.php';
 
-		foreach ($this->paths as $path => $weight)
-		{
+		foreach ($this->paths as $path => $weight) {
 			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 			$pathname = $path . $filename;
 
-			if (!file_exists($pathname))
-			{
+			if (!file_exists($pathname)) {
 				continue;
 			}
 
@@ -255,65 +223,48 @@ class Config implements \ArrayAccess
 	 * Synthesize a configuration.
 	 *
 	 * @param string $name Name of the configuration to synthesize.
-	 * @param string|array $synthesizer Callback for the synthesis.
-	 * @param null|string $from If the configuration is a derivative $from is the name
+	 * @param string|callable $synthesizer Callback for the synthesis.
+	 * @param string|null $from If the configuration is a derivative $from is the name
 	 * of the source configuration.
-	 *
-	 * @return mixed
 	 */
-	public function synthesize($name, $synthesizer, $from = null)
+	public function synthesize(string $name, string|callable $synthesizer, string $from = null): mixed
 	{
-		if (array_key_exists($name, $this->synthesized))
-		{
+		if (array_key_exists($name, $this->synthesized)) {
 			return $this->synthesized[$name];
 		}
 
 		$cache = $this->cache;
 		$cache_key = $this->get_cache_key($name);
 
-		if ($cache)
-		{
+		if ($cache) {
 			$config = $cache->retrieve($cache_key);
 
-			if ($config !== null)
-			{
+			if ($config !== null) {
 				return $this->synthesized[$name] = $config;
 			}
 		}
 
-		$config = $this->synthesize_for_real($from ?: $name, $synthesizer);
+		$config = $this->synthesize_for_real($from ?? $name, $synthesizer);
 
-		if ($cache)
-		{
-			$cache->store($cache_key, $config);
-		}
+		$cache?->store($cache_key, $config);
 
 		return $this->synthesized[$name] = $config;
 	}
 
-	/**
-	 * @param string $name
-	 * @param callable $synthesizer
-	 *
-	 * @return mixed
-	 */
-	private function synthesize_for_real($name, $synthesizer)
+	private function synthesize_for_real(string $name, callable|string $synthesizer): mixed
 	{
 		$fragments = $this->get_fragments($name);
 
-		if (!$fragments)
-		{
+		if (!$fragments) {
 			throw new NoFragmentDefined($name);
 		}
 
-		if ($synthesizer == 'merge')
-		{
-			return call_user_func_array('array_merge', $fragments);
+		if ($synthesizer === 'merge') {
+			return call_user_func_array('array_merge', array_values($fragments));
 		}
 
-		if ($synthesizer == 'recursive merge')
-		{
-			return call_user_func_array('ICanBoogie\array_merge_recursive', $fragments);
+		if ($synthesizer === 'recursive merge') {
+			return call_user_func_array('ICanBoogie\array_merge_recursive', array_values($fragments));
 		}
 
 		return call_user_func($synthesizer, $fragments);

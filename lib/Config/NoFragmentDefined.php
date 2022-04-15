@@ -11,26 +11,20 @@
 
 namespace ICanBoogie\Config;
 
+use LogicException;
+use Throwable;
+
 /**
  * Exception throw when no fragment of a specified type is defined.
  */
-class NoFragmentDefined extends \LogicException implements Exception
+class NoFragmentDefined extends LogicException implements Exception
 {
-	/**
-	 * @param string $fragment
-	 * @param \Exception|null $previous
-	 */
-	public function __construct($fragment, \Exception $previous = null)
+	public function __construct(string $fragment, Throwable $previous = null)
 	{
 		parent::__construct($this->format_message($fragment), 500, $previous);
 	}
 
-	/**
-	 * @param $fragment
-	 *
-	 * @return string
-	 */
-	protected function format_message($fragment)
+	private function format_message(string $fragment): string
 	{
 		return "There is not `$fragment` fragment defined.";
 	}

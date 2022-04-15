@@ -16,14 +16,13 @@ namespace ICanBoogie;
  */
 final class ConfigProfiler
 {
-	static public $entries;
+	static public array $entries;
 
 	/**
 	 * @param float $started_at Start micro time.
 	 * @param string $name Fragment name
-	 * @param callable $synthesizer
 	 */
-	static public function add($started_at, $name, $synthesizer)
+	static public function add(float $started_at, string $name, string $synthesizer)
 	{
 		self::$entries[] = [ $started_at, microtime(true), $name, $synthesizer ];
 	}
