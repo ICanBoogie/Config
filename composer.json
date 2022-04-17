@@ -24,7 +24,7 @@
 	"prefer-dist": true,
 	"require": {
 		"php": ">=8.1",
-		"icanboogie/common": "^2.0",
+		"icanboogie/common": "^6.0",
 		"icanboogie/storage": "^6.0"
 	},
 	"require-dev": {
