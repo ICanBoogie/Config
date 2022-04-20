@@ -19,36 +19,32 @@ use PHPUnit\Framework\TestCase;
 
 final class ConfigTest extends TestCase
 {
-	static private array $paths;
+	private const PATHS = [
 
-	static public function setupBeforeClass(): void
-	{
-		self::$paths = [
+		__DIR__ . '/fixtures/config01' => 0,
+		__DIR__ . '/fixtures/config02' => 0,
+		__DIR__ . '/fixtures/config03' => 0,
 
-			__DIR__ . '/fixtures/config01' => 0,
-			__DIR__ . '/fixtures/config02' => 0
-
-		];
-	}
+	];
 
 	public function test_should_throw_exception_on_undefined_synthesizer(): void
 	{
 		$name = 'container';
-		$configs = new Config(self::$paths);
+		$configs = new Config(self::PATHS);
 		$this->expectException(NoSynthesizerDefined::class);
 		$configs[$name];
 	}
 
 	public function test_should_throw_exception_on_undefined_fragment(): void
 	{
-		$configs = new Config(self::$paths);
+		$configs = new Config(self::PATHS);
 		$this->expectException(NoFragmentDefined::class);
 		$configs->synthesize(uniqid(), 'merge');
 	}
 
 	public function test_synthesize_with_array_merge(): void
 	{
-		$configs = new Config(self::$paths);
+		$configs = new Config(self::PATHS);
 
 		$this->assertEquals([
 
@@ -60,6 +56,22 @@ final class ConfigTest extends TestCase
 			]
 
 		], $configs->synthesize('app', 'recursive merge'));
+	}
+
+	public function test_with_builder(): void
+	{
+		$configs = new Config(self::PATHS);
+		$config = $configs->synthesize('builder', SampleConfigBuilder::class);
+
+		$this->assertInstanceOf(SampleConfig::class, $config);
+		$this->assertEquals(
+			new SampleConfig(
+				[ "one", "two" ],
+				[ 2, 3 ],
+				true
+			),
+			$config
+		);
 	}
 
 	public function test_states(): void

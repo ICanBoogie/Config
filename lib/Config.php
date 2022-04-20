@@ -16,8 +16,15 @@ use ICanBoogie\Config\NoFragmentDefined;
 use ICanBoogie\Config\NoSynthesizerDefined;
 use ICanBoogie\Storage\Storage;
 use InvalidArgumentException;
+use RuntimeException;
+use Throwable;
 
 use function array_merge;
+use function file_exists;
+use function is_a;
+use function rtrim;
+
+use const DIRECTORY_SEPARATOR;
 
 /**
  * Provides synthesized low-level configurations.
@@ -220,6 +227,27 @@ class Config implements ArrayAccess
 	}
 
 	/**
+	 * @param string $name Name of the configuration.
+	 *
+	 * @return iterable<string>
+	 */
+	private function path_iterator(string $name): iterable
+	{
+		$filename = $name . '.php';
+
+		foreach (array_keys($this->paths) as $path) {
+			$path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+			$pathname = $path . $filename;
+
+			if (!file_exists($pathname)) {
+				continue;
+			}
+
+			yield $pathname;
+		}
+	}
+
+	/**
 	 * Synthesize a configuration.
 	 *
 	 * @param string $name Name of the configuration to synthesize.
@@ -253,6 +281,25 @@ class Config implements ArrayAccess
 
 	private function synthesize_for_real(string $name, callable|string $synthesizer): mixed
 	{
+		if (is_a($synthesizer, ConfigBuilder::class, true)) {
+			$builder = $this->resolve_config_builder($synthesizer);
+
+			foreach ($this->path_iterator($name) as $path) {
+				try {
+					(function (ConfigBuilder $builder, string $__FRAGMENT_PATH__): void {
+						(require $__FRAGMENT_PATH__)($builder);
+					})(
+						$builder,
+						$path
+					);
+				} catch (Throwable $e) {
+					throw new RuntimeException("Configuration failed with $path", previous: $e);
+				}
+			}
+
+			return $builder->build();
+		}
+
 		$fragments = $this->get_fragments($name);
 
 		if (!$fragments) {
@@ -268,5 +315,13 @@ class Config implements ArrayAccess
 		}
 
 		return call_user_func($synthesizer, $fragments);
+	}
+
+	/**
+	 * @param class-string<ConfigBuilder> $configurator
+	 */
+	private function resolve_config_builder(string $configurator): ConfigBuilder
+	{
+		return new $configurator();
 	}
 }
