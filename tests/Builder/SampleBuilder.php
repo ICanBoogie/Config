@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Test\ICanBoogie;
+namespace Test\ICanBoogie\Builder;
 
-use ICanBoogie\ConfigBuilder;
+use ICanBoogie\Config\Builder;
+use Test\ICanBoogie\SampleConfig;
 
-class SampleConfigBuilder implements ConfigBuilder
+class SampleBuilder implements Builder
 {
 	private array $strings = [];
 	private array $integers = [];

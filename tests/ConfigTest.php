@@ -16,6 +16,7 @@ use ICanBoogie\Config\NoFragmentDefined;
 use ICanBoogie\Config\NoSynthesizerDefined;
 use ICanBoogie\Storage\FileStorage;
 use PHPUnit\Framework\TestCase;
+use Test\ICanBoogie\Builder\SampleBuilder;
 
 final class ConfigTest extends TestCase
 {
@@ -61,7 +62,7 @@ final class ConfigTest extends TestCase
 	public function test_with_builder(): void
 	{
 		$configs = new Config(self::PATHS);
-		$config = $configs->synthesize('builder', SampleConfigBuilder::class);
+		$config = $configs->synthesize('builder', SampleBuilder::class);
 
 		$this->assertInstanceOf(SampleConfig::class, $config);
 		$this->assertEquals(

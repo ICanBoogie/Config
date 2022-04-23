@@ -2,7 +2,9 @@
 
 namespace Test\ICanBoogie;
 
-return function (SampleConfigBuilder $builder) {
+use Test\ICanBoogie\Builder\SampleBuilder;
+
+return function (SampleBuilder $builder) {
 
 	$builder->add_int(3);
 	$builder->bool = true;

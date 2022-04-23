@@ -11,7 +11,7 @@
 
 namespace Test\ICanBoogie;
 
-class SampleConfig
+final class SampleConfig
 {
 	public function __construct(
 		public readonly array $strings,

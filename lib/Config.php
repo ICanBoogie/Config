@@ -12,6 +12,7 @@
 namespace ICanBoogie;
 
 use ArrayAccess;
+use ICanBoogie\Config\Builder;
 use ICanBoogie\Config\NoFragmentDefined;
 use ICanBoogie\Config\NoSynthesizerDefined;
 use ICanBoogie\Storage\Storage;
@@ -281,12 +282,12 @@ class Config implements ArrayAccess
 
 	private function synthesize_for_real(string $name, callable|string $synthesizer): mixed
 	{
-		if (is_a($synthesizer, ConfigBuilder::class, true)) {
+		if (is_a($synthesizer, Builder::class, true)) {
 			$builder = $this->resolve_config_builder($synthesizer);
 
 			foreach ($this->path_iterator($name) as $path) {
 				try {
-					(function (ConfigBuilder $builder, string $__FRAGMENT_PATH__): void {
+					(function (Builder $builder, string $__FRAGMENT_PATH__): void {
 						(require $__FRAGMENT_PATH__)($builder);
 					})(
 						$builder,
@@ -318,9 +319,9 @@ class Config implements ArrayAccess
 	}
 
 	/**
-	 * @param class-string<ConfigBuilder> $configurator
+	 * @param class-string<Builder> $configurator
 	 */
-	private function resolve_config_builder(string $configurator): ConfigBuilder
+	private function resolve_config_builder(string $configurator): Builder
 	{
 		return new $configurator();
 	}

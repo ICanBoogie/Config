@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace ICanBoogie;
+namespace ICanBoogie\Config;
 
 /**
  * A config builder provides an API to build a configuration.
  *
  * It's an alternative to the legacy configuration system built on arrays.
  */
-interface ConfigBuilder
+interface Builder
 {
 	/**
 	 * Build the configuration.
