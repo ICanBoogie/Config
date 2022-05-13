@@ -18,10 +18,10 @@ namespace ICanBoogie\Config;
  */
 interface Builder
 {
-	/**
-	 * Build the configuration.
-	 *
-	 * The configuration can be an array or an object, it doesn't matter, but it needs to be serializable.
-	 */
-	public function build(): mixed;
+    /**
+     * Build the configuration.
+     *
+     * The configuration can be an array or an object, it doesn't matter, but it needs to be serializable.
+     */
+    public function build(): mixed;
 }

@@ -2,7 +2,7 @@
 
 return [
 
-	'one' => "one",
-	'two' => "two"
+    'one' => "one",
+    'two' => "two"
 
 ];

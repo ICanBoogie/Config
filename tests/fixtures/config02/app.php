@@ -2,12 +2,12 @@
 
 return [
 
-	'cache config' => true,
+    'cache config' => true,
 
-	'session' => [
+    'session' => [
 
-		'name' => 'ICanBoogie'
+        'name' => 'ICanBoogie'
 
-	]
+    ]
 
 ];

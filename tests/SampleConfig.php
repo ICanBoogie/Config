@@ -13,10 +13,10 @@ namespace Test\ICanBoogie;
 
 final class SampleConfig
 {
-	public function __construct(
-		public readonly array $strings,
-		public readonly array $integers,
-		public readonly bool $bool,
-	) {
-	}
+    public function __construct(
+        public readonly array $strings,
+        public readonly array $integers,
+        public readonly bool $bool,
+    ) {
+    }
 }

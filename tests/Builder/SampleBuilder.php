@@ -16,24 +16,26 @@ use Test\ICanBoogie\SampleConfig;
 
 class SampleBuilder implements Builder
 {
-	private array $strings = [];
-	private array $integers = [];
-	public bool $bool;
+    private array $strings = [];
+    private array $integers = [];
+    public bool $bool;
 
-	public function add_string(string $string) {
-		$this->strings[] = $string;
-	}
+    public function add_string(string $string)
+    {
+        $this->strings[] = $string;
+    }
 
-	public function add_int(string $int) {
-		$this->integers[] = $int;
-	}
+    public function add_int(string $int)
+    {
+        $this->integers[] = $int;
+    }
 
-	public function build(): mixed
-	{
-		return new SampleConfig(
-			$this->strings,
-			$this->integers,
-			$this->bool,
-		);
-	}
+    public function build(): mixed
+    {
+        return new SampleConfig(
+            $this->strings,
+            $this->integers,
+            $this->bool,
+        );
+    }
 }

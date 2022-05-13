@@ -1,10 +1,9 @@
 # Config
 
-[![Release](https://img.shields.io/packagist/v/ICanBoogie/config.svg)](https://packagist.org/packages/icanboogie/config)
-[![Build Status](https://img.shields.io/travis/ICanBoogie/Config.svg)](http://travis-ci.org/ICanBoogie/Config)
+[![Packagist](https://img.shields.io/packagist/v/icanboogie/config.svg)](https://packagist.org/packages/icanboogie/config)
 [![Code Quality](https://img.shields.io/scrutinizer/g/ICanBoogie/Config.svg)](https://scrutinizer-ci.com/g/ICanBoogie/Config)
 [![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Config.svg)](https://coveralls.io/r/ICanBoogie/Config)
-[![Packagist](https://img.shields.io/packagist/dt/icanboogie/config.svg)](https://packagist.org/packages/icanboogie/config)
+[![Downloads](https://img.shields.io/packagist/dt/icanboogie/config.svg)](https://packagist.org/packages/icanboogie/config)
 
 An API to synthesize low-level configuration.
 
@@ -16,6 +15,14 @@ are used to synthesize different configurations, these configurations are qualif
 as _derived_. Fragments are synthesized using callback functions called _synthesizers_.
 Configurations are managed by a [Config][] instance. Finally, synthesized configurations
 can be cached, which cancel the cost of the synthesis.
+
+
+
+#### Installation
+
+```bash
+composer require icanboogie/config
+```
 
 
 
@@ -173,68 +180,24 @@ $config = new Config($paths, $synthesizers, $cache);
 
 
 
+## Continuous Integration
 
+The project is continuously tested by [GitHub actions](https://github.com/ICanBoogie/Config/actions).
 
-## Installation
-
-The recommended way to install this package is through [Composer](http://getcomposer.org/):
-
-```
-composer require icanboogie/config
-```
-
-
-
-
-
-### Cloning the repository
-
-The package is [available on GitHub](https://github.com/ICanBoogie/Config), its repository can be
-cloned with the following command line:
-
-	$ git clone https://github.com/ICanBoogie/Config.git
-
-
-
-
-
-## Documentation
-
-The package is documented as part of the [ICanBoogie](https://icanboogie.org/) framework
-[documentation](https://icanboogie.org/docs/). You can generate the documentation for the package
-and its dependencies with the `make doc` command. The documentation is generated in the `docs`
-directory. [ApiGen](http://apigen.org/) is required. You can later clean the directory with
-the `make clean` command.
-
-
-
-
-
-## Testing
-
-The test suite is ran with the `make test` command. [Composer](http://getcomposer.org/) is
-automatically installed as well as all dependencies required to run the suite. You can later
-clean the directory with the `make clean` command.
-
-The package is continuously tested by [Travis CI](http://about.travis-ci.org/).
-
-[![Build Status](https://img.shields.io/travis/ICanBoogie/Config.svg)](http://travis-ci.org/ICanBoogie/Config)
-[![Code Coverage](https://img.shields.io/coveralls/ICanBoogie/Config.svg)](https://coveralls.io/r/ICanBoogie/Config)
-
-
+[![Tests](https://github.com/ICanBoogie/Config/workflows/test/badge.svg?branch=master)](https://github.com/ICanBoogie/Config/actions?query=workflow%3Atest)
+[![Static Analysis](https://github.com/ICanBoogie/Config/workflows/static-analysis/badge.svg?branch=master)](https://github.com/ICanBoogie/Config/actions?query=workflow%3Astatic-analysis)
+[![Code Style](https://github.com/ICanBoogie/Config/workflows/code-style/badge.svg?branch=master)](https://github.com/ICanBoogie/Config/actions?query=workflow%3Acode-style)
 
 
 
 ## License
 
-**icanboogie/config** is licensed under the New BSD License - See the [LICENSE](LICENSE) file for details.
+**icanboogie/config** is released under the [BSD-3-Clause](LICENSE).
 
 
 
-
-
+[ICanBoogie]: https://icanboogie.org/
 [icanboogie/event]: https://github.com/ICanBoogie/Event
-[ICanBoogie]:       https://github.com/ICanBoogie
 
 [Config]:               https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.html
 [NoFragmentDefined]:    https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.NoFragmentDefined.html

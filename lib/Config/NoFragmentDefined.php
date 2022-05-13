@@ -19,13 +19,13 @@ use Throwable;
  */
 class NoFragmentDefined extends LogicException implements Exception
 {
-	public function __construct(string $fragment, Throwable $previous = null)
-	{
-		parent::__construct($this->format_message($fragment), 500, $previous);
-	}
+    public function __construct(string $fragment, Throwable $previous = null)
+    {
+        parent::__construct($this->format_message($fragment), 500, $previous);
+    }
 
-	private function format_message(string $fragment): string
-	{
-		return "There is not `$fragment` fragment defined.";
-	}
+    private function format_message(string $fragment): string
+    {
+        return "There is not `$fragment` fragment defined.";
+    }
 }

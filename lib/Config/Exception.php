@@ -16,5 +16,4 @@ namespace ICanBoogie\Config;
  */
 interface Exception
 {
-
 }
