@@ -18,19 +18,19 @@ class SampleBuilder implements Builder
 {
     private array $strings = [];
     private array $integers = [];
-    public bool $bool;
+    public bool $bool = false;
 
     public function add_string(string $string)
     {
         $this->strings[] = $string;
     }
 
-    public function add_int(string $int)
+    public function add_int(int $int)
     {
         $this->integers[] = $int;
     }
 
-    public function build(): mixed
+    public function build(): SampleConfig
     {
         return new SampleConfig(
             $this->strings,

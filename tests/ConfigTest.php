@@ -12,8 +12,7 @@
 namespace Test\ICanBoogie;
 
 use ICanBoogie\Config;
-use ICanBoogie\Config\NoFragmentDefined;
-use ICanBoogie\Config\NoSynthesizerDefined;
+use ICanBoogie\Config\NoBuilderDefined;
 use ICanBoogie\Storage\FileStorage;
 use PHPUnit\Framework\TestCase;
 use Test\ICanBoogie\Builder\SampleBuilder;
@@ -32,37 +31,14 @@ final class ConfigTest extends TestCase
     {
         $name = 'container';
         $configs = new Config(self::PATHS);
-        $this->expectException(NoSynthesizerDefined::class);
+        $this->expectException(NoBuilderDefined::class);
         $configs[$name];
     }
 
-    public function test_should_throw_exception_on_undefined_fragment(): void
+    public function test_build(): void
     {
         $configs = new Config(self::PATHS);
-        $this->expectException(NoFragmentDefined::class);
-        $configs->synthesize(uniqid(), 'merge');
-    }
-
-    public function test_synthesize_with_array_merge(): void
-    {
-        $configs = new Config(self::PATHS);
-
-        $this->assertEquals([
-
-            'cache config' => true,
-            'session' => [
-
-                'name' => "ICanBoogie"
-
-            ]
-
-        ], $configs->synthesize('app', 'recursive merge'));
-    }
-
-    public function test_with_builder(): void
-    {
-        $configs = new Config(self::PATHS);
-        $config = $configs->synthesize('builder', SampleBuilder::class);
+        $config = $configs->build('builder', SampleBuilder::class);
 
         $this->assertInstanceOf(SampleConfig::class, $config);
         $this->assertEquals(
@@ -78,25 +54,25 @@ final class ConfigTest extends TestCase
     public function test_states(): void
     {
         $configs = new Config([ __DIR__ . '/fixtures/config01' => 0 ]);
-        $app1 = $configs->synthesize('app', 'recursive merge');
+        $config1 = $configs->build('builder', SampleBuilder::class);
         $configs->add(__DIR__ . '/fixtures/config02');
-        $app2 = $configs->synthesize('app', 'recursive merge');
-        $app3 = $configs->synthesize('app', 'recursive merge');
+        $config2 = $configs->build('builder', SampleBuilder::class);
+        $config3 = $configs->build('builder', SampleBuilder::class);
 
-        $this->assertNotSame($app1, $app2);
-        $this->assertSame($app2, $app3);
+        $this->assertNotSame($config1, $config2);
+        $this->assertSame($config2, $config3);
     }
 
     public function test_states_with_cache(): void
     {
         $configs = new Config([ __DIR__ . '/fixtures/config01' => 0 ], [], new FileStorage(__DIR__ . '/cache'));
-        $app1 = $configs->synthesize('app', 'recursive merge');
+        $config1 = $configs->build('builder', SampleBuilder::class);
         $configs->add(__DIR__ . '/fixtures/config02');
-        $app2 = $configs->synthesize('app', 'recursive merge');
-        $app3 = $configs->synthesize('app', 'recursive merge');
+        $config2 = $configs->build('builder', SampleBuilder::class);
+        $config3 = $configs->build('builder', SampleBuilder::class);
 
-        $this->assertNotSame($app1, $app2);
-        $this->assertSame($app2, $app3);
-        $this->assertNotSame($app3, $configs->synthesize('event', 'recursive merge'));
+        $this->assertNotSame($config1, $config2);
+        $this->assertSame($config2, $config3);
+        $this->assertNotSame($config3, $configs->build('other_builder', SampleBuilder::class));
     }
 }

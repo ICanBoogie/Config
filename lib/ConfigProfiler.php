@@ -12,7 +12,7 @@
 namespace ICanBoogie;
 
 /**
- * Collects timing information about configuration synthesizes.
+ * Collects timing information about configuration builders.
  */
 final class ConfigProfiler
 {
@@ -22,8 +22,8 @@ final class ConfigProfiler
      * @param float $started_at Start micro time.
      * @param string $name Fragment name
      */
-    public static function add(float $started_at, string $name, string $synthesizer)
+    public static function add(float $started_at, string $name, string $builder_class)
     {
-        self::$entries[] = [ $started_at, microtime(true), $name, $synthesizer ];
+        self::$entries[] = [ $started_at, microtime(true), $name, $builder_class ];
     }
 }

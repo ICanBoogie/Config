@@ -15,9 +15,9 @@ use LogicException;
 use Throwable;
 
 /**
- * Exception thrown in attempt to build a configuration without synthesizer defined.
+ * Exception thrown in attempt to build a configuration without builder defined.
  */
-class NoSynthesizerDefined extends LogicException
+class NoBuilderDefined extends LogicException
 {
     public function __construct(string $id, Throwable $previous = null)
     {
@@ -26,7 +26,7 @@ class NoSynthesizerDefined extends LogicException
 
     private function format_message(string $id): string
     {
-        return "There is no synthesizer defined to build configuration `$id`."
-            . " (https://icanboogie.org/docs/4.0/config#declaring-synthesizers)";
+        return "There is no builder defined for configuration `$id`."
+            . " (https://icanboogie.org/docs/6.0/config#declaring-builders)";
     }
 }
