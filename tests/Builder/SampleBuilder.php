@@ -14,8 +14,13 @@ namespace Test\ICanBoogie\Builder;
 use ICanBoogie\Config\Builder;
 use Test\ICanBoogie\SampleConfig;
 
-class SampleBuilder implements Builder
+final class SampleBuilder implements Builder
 {
+    static public function get_fragment_filename(): string
+    {
+        return "builder";
+    }
+
     private array $strings = [];
     private array $integers = [];
     public bool $bool = false;

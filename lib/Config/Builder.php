@@ -19,7 +19,12 @@ namespace ICanBoogie\Config;
 interface Builder
 {
     /**
-     * Build the configuration.
+     * Returns the filename of the configuration fragments used by this builder.
+     */
+    public static function get_fragment_filename(): string;
+
+    /**
+     * Builds the configuration.
      *
      * The configuration can be an array or an object, it doesn't matter, but it needs to be serializable.
      */

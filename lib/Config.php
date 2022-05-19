@@ -224,12 +224,14 @@ class Config implements ArrayAccess
     private function build_for_real(string $name, string $builder_class): object
     {
         if (!is_a($builder_class, Builder::class, true)) {
-            throw new LogicException("Invalid builder for configuration `$name`, builders must implement " . Builder::class);
+            throw new LogicException(
+                "Invalid builder for configuration `$name`, builders must implement " . Builder::class
+            );
         }
 
         $builder = $this->resolve_config_builder($builder_class);
 
-        foreach ($this->path_iterator($name) as $path) {
+        foreach ($this->path_iterator($builder_class::get_fragment_filename()) as $path) {
             try {
                 (function (Builder $builder, string $__FRAGMENT_PATH__): void {
                     (require $__FRAGMENT_PATH__)($builder);
