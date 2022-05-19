@@ -19,8 +19,6 @@ use LogicException;
 use RuntimeException;
 use Throwable;
 
-use function array_keys;
-use function array_merge;
 use function file_exists;
 use function is_a;
 use function rtrim;
@@ -30,14 +28,8 @@ use const DIRECTORY_SEPARATOR;
 /**
  * Provides low-level configurations.
  */
-class Config implements ConfigProvider
+final class Config implements ConfigProvider
 {
-    /**
-     * @var array<string, int>
-     *    Where _key_ is the path to a config directory and _value_ is the weight of that path.
-     */
-    private array $paths = [];
-
     /**
      * Built configurations.
      *
@@ -47,18 +39,17 @@ class Config implements ConfigProvider
     private array $built = [];
 
     /**
-     * @param array<string, int> $paths
+     * @param string[] $paths
      *     An array of key/value pairs where _key_ is the path to a config directory and
      *     _value_ is the weight of that path.
      * @param array<string, class-string<Builder>> $builders
      * @param Storage|null $cache A cache for configurations.
      */
     public function __construct(
-        array $paths,
+        private readonly array $paths,
         private readonly array $builders,
         public ?Storage $cache = null
     ) {
-        $this->add($paths);
     }
 
     public function config_for_class(string $class): object
@@ -96,66 +87,9 @@ class Config implements ConfigProvider
      */
     private function get_cache_key(string $name): string
     {
-        $this->cache_key ??= substr(sha1(implode('|', array_keys($this->paths))), 0, 8);
+        $this->cache_key ??= substr(sha1(implode('|', $this->paths)), 0, 8);
 
         return $this->cache_key . '_' . $name;
-    }
-
-    /**
-     * Revokes built configs and the cache key.
-     *
-     * The method is usually called after the config paths have been modified.
-     */
-    private function revoke(): void
-    {
-        $this->built = [];
-        $this->cache_key = null;
-    }
-
-    /**
-     * Adds a path or several paths to the config.
-     *
-     * Paths are sorted according to their weight. The order in which they were defined is
-     * preserved for paths with the same weight.
-     *
-     * <pre>
-     * <?php
-     *
-     * $config->add('/path/to/config', 10);
-     * $config->add([
-     *
-     *     '/path1/to/config' => 10,
-     *     '/path2/to/config' => 10,
-     *     '/path2/to/config' => -10
-     *
-     * ]);
-     * </pre>
-     *
-     * @param array<string, int>|string $path
-     *     An array of key/value pairs where _key_ is the path to a config directory and
-     *     _value_ is the weight of that path.
-     * @param int $weight Weight of the path. The argument is discarded if `$path` is an array.
-     *
-     * @throws InvalidArgumentException if the path is empty.
-     */
-    public function add(array|string $path, int $weight = 0)
-    {
-        if (!$path) {
-            throw new InvalidArgumentException('$path is empty.');
-        }
-
-        $paths = $this->paths;
-
-        if (is_array($path)) {
-            $paths = array_merge($paths, $path);
-        } else {
-            $paths[$path] = $weight;
-        }
-
-        stable_sort($paths);
-
-        $this->paths = $paths;
-        $this->revoke();
     }
 
     /**
@@ -240,7 +174,7 @@ class Config implements ConfigProvider
     {
         $filename = $name . '.php';
 
-        foreach (array_keys($this->paths) as $path) {
+        foreach ($this->paths as $path) {
             $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
             $pathname = $path . $filename;
 
