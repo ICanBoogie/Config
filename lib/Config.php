@@ -11,7 +11,6 @@
 
 namespace ICanBoogie;
 
-use ArrayAccess;
 use ICanBoogie\Config\Builder;
 use ICanBoogie\Config\NoBuilderDefined;
 use ICanBoogie\Storage\Storage;
@@ -31,13 +30,11 @@ use const DIRECTORY_SEPARATOR;
 /**
  * Provides low-level configurations.
  */
-class Config implements ArrayAccess
+class Config implements ConfigProvider
 {
     /**
-     * An array of key/value where _key_ is a path to a config directory and _value_ is its weight.
-     * The array is sorted according to the weight of the paths.
-     *
-     * @var array
+     * @var array<string, int>
+     *    Where _key_ is the path to a config directory and _value_ is the weight of that path.
      */
     private array $paths = [];
 
@@ -58,63 +55,36 @@ class Config implements ArrayAccess
      */
     public function __construct(
         array $paths,
-        private readonly array $builders = [],
+        private readonly array $builders,
         public ?Storage $cache = null
     ) {
         $this->add($paths);
     }
 
-    /**
-     * @inheritdoc
-     *
-     * @throws OffsetNotWritable in attempt to set a configuration.
-     */
-    public function offsetSet(mixed $offset, mixed $value): void
+    public function config_for_class(string $class): object
     {
-        throw new OffsetNotWritable([ $offset, $this ]);
+        return $this->built[$class] ??= $this->make_config($class);
     }
 
     /**
-     * Checks if a config has been built.
+     * @template T of object
      *
-     * @param string $offset A config identifier.
-     */
-    public function offsetExists(mixed $offset): bool
-    {
-        return isset($this->built[$offset]);
-    }
-
-    /**
-     * @inheritdoc
-     *
-     * @throws OffsetNotWritable in attempt to unset an offset.
-     */
-    public function offsetUnset(mixed $offset): void
-    {
-        throw new OffsetNotWritable([ $offset, $this ]);
-    }
-
-    /**
-     * Returns a configuration.
-     *
-     * @param string $offset A config identifier.
+     * @param class-string<T> $class A config identifier.
      *
      * @throws InvalidArgumentException in attempt to obtain an undefined config.
+     *
+     * @return T
      */
-    public function offsetGet(mixed $offset): mixed
+    private function make_config(string $class): object
     {
-        if ($this->offsetExists($offset)) {
-            return $this->built[$offset];
-        }
-
-        $builder_class = $this->builders[$offset]
-            ?? throw new NoBuilderDefined($offset);
+        $builder_class = $this->builders[$class]
+            ?? throw new NoBuilderDefined($class);
 
         $started_at = microtime(true);
 
-        $config = $this->build($offset, $builder_class);
+        $config = $this->build($class, $builder_class);
 
-        ConfigProfiler::add($started_at, $offset, $builder_class);
+        ConfigProfiler::add($started_at, $class, $builder_class);
 
         return $config;
     }
@@ -189,43 +159,49 @@ class Config implements ArrayAccess
     }
 
     /**
-     * Builds a configuration.
+     * @template T of object
      *
-     * @param string $name Name of the configuration to build.
+     * @param class-string<T> $config_class
      * @param class-string<Builder> $builder_class
+     *
+     * @return T
+     *
+     * @throws InvalidArgumentException in attempt to obtain an undefined config.
      */
-    public function build(string $name, string $builder_class): mixed
+    private function build(string $config_class, string $builder_class): object
     {
-        if (array_key_exists($name, $this->built)) {
-            return $this->built[$name];
+        if (array_key_exists($config_class, $this->built)) {
+            return $this->built[$config_class];
         }
 
         $cache = $this->cache;
-        $cache_key = $this->get_cache_key($name);
+        $cache_key = $this->get_cache_key($config_class);
         $config = $cache?->retrieve($cache_key);
 
         if ($config !== null) {
-            return $this->built[$name] = $config;
+            return $this->built[$config_class] = $config;
         }
 
-        $config = $this->build_for_real($name, $builder_class);
+        $config = $this->build_for_real($config_class, $builder_class);
 
         $cache?->store($cache_key, $config);
 
-        return $this->built[$name] = $config;
+        return $this->built[$config_class] = $config;
     }
 
     /**
-     * @param string $name
+     * @template T of object
+     *
+     * @param class-string<T> $config_class
      * @param class-string<Builder> $builder_class
      *
-     * @return object
+     * @return T
      */
-    private function build_for_real(string $name, string $builder_class): object
+    private function build_for_real(string $config_class, string $builder_class): object
     {
         if (!is_a($builder_class, Builder::class, true)) {
             throw new LogicException(
-                "Invalid builder for configuration `$name`, builders must implement " . Builder::class
+                "Invalid builder for configuration `$config_class`, builders must implement " . Builder::class
             );
         }
 

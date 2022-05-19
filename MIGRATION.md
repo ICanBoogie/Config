@@ -9,9 +9,26 @@
 
 - `Config::synthesize()` has been renamed as `Config::build()`.
 
+- Add `ConfigProvider` interface.
+
 ### Backward Incompatible Changes
 
-N/A
+- The `Config` class no longer implements `ArrayAccess`, it implements `ConfigProvider` instead.
+
+    ```php
+    <?php
+
+    /* @var ICanBoogie\Config $configs */
+
+    $app_config = $configs['app'];
+    ```
+    ```php
+    <?php
+
+    /* @var ICanBoogie\Config $configs */
+
+    $app_config = $configs->config_for_class(AppConfig::class);
+    ```
 
 ### Deprecated Features
 
