@@ -12,9 +12,9 @@
 namespace ICanBoogie\Config;
 
 /**
- * A config builder provides an API to build a configuration.
+ * A configuration builder.
  *
- * It's an alternative to the legacy configuration system built on arrays.
+ * @template T of object
  */
 interface Builder
 {
@@ -24,9 +24,9 @@ interface Builder
     public static function get_fragment_filename(): string;
 
     /**
-     * Builds the configuration.
+     * Builds the configuration object.
      *
-     * The configuration can be an array or an object, it doesn't matter, but it needs to be serializable.
+     * @return T
      */
-    public function build(): mixed;
+    public function build(): object;
 }

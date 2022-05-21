@@ -9,9 +9,9 @@ An API to build low-level configuration.
 
 This package is used by the framework [ICanBoogie][] to configure its components.
 
-Configurations are defined by a set of files that are called _fragments_. These fragments are used
-to build the configuration of one or more components. Configurations are managed by a [Config][]
-instance. Configurations can be cached, which cancels the cost of the builds.
+Configurations are defined by a set of files called _fragments_. Builders use these fragments to
+build configurations. Configurations are managed by a [Config][] instance. Configurations can be
+cached, which cancels the cost of the builds.
 
 
 
@@ -40,49 +40,35 @@ config they are used to build.
 The configuration is represented by a [Config][] instance, which is used as an array to access
 specific configurations.
 
-The following example demonstrates how to obtain the configuration `routes`:
+The following example demonstrates how to obtain a configuration of class `MyConfig`:
 
 ```php
 <?php
 
 /* @var \ICanBoogie\Config $config */
 
-$routing_config = $config['routes'];
+$my_config = $config->config_for_class(MyConfig::class);
 ```
 
-A [NoBuilderDefined][] exception is thrown if there is no builder defined for a configuration.
-
-
-
-
-## Building a configuration
-
-The `build()` method of the [Config][] instance is used to build a configuration.
-
-The following example demonstrates how a builder can be used to build multiple fragments. The
-builder must implement the `Builder` interface.
-
-```php
-<?php
-
-$config = $config->build('myconfig', MyBuilder::class);
-```
-
+A [NoBuilderDefined][] exception is thrown if there is no builder defined for a configuration class.
 
 
 
 
 ## Configuration builders
 
-Builders can be defined for each configuration, they are used when the config collection is used as
-an array:
+Builders are defined for each configuration.
 
 ```php
 <?php
 
-$builders = [ 'myconfig' => MyBuilder::class ];
+use ICanBoogie\Config;
+
+/* @var string[] $paths */
+
+$builders = [ MyConfig::class => MyBuilder::class ];
 $config = new Config($paths, builders);
-$my_config = $configs['myconfig'];
+$my_config = $config->config_for_class(MyConfig::class);
 ```
 
 
@@ -97,10 +83,10 @@ enable caching, you just need to provide a cache implementing [Storage][].
 ```php
 <?php
 
+namespace ICanBoogie;
+
 $config = new Config($paths, $builders, $cache);
 ```
-
-
 
 
 
@@ -137,10 +123,9 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) for details.
 
 
 
-[ICanBoogie]: https://icanboogie.org/
-[icanboogie/event]: https://github.com/ICanBoogie/Event
+[ICanBoogie]:           https://icanboogie.org/
+[icanboogie/event]:     https://github.com/ICanBoogie/Event
 
-[Config]:               https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.html
-[NoFragmentDefined]:    https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.NoFragmentDefined.html
-[NoBuilderDefined]: https://icanboogie.org/api/config/1.2/class-ICanBoogie.Config.NoSynhtesizerDefined.html
+[Config]:               lib/Config.php
+[NoBuilderDefined]:     lib/Config/NoBuilderDefined.php
 [Storage]:              https://icanboogie.org/api/storage/2.0/class-ICanBoogie.Storage.Storage.html

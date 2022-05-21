@@ -11,19 +11,27 @@
 
 namespace ICanBoogie;
 
+use ICanBoogie\Config\Builder;
+
 /**
  * Collects timing information about configuration builders.
  */
 final class ConfigProfiler
 {
+    /**
+     * @var array{ 0: float, 1: float, 2: string, 3: string }
+     */
     public static array $entries;
 
     /**
-     * @param float $started_at Start micro time.
-     * @param string $name Fragment name
+     * @template T of object
+     *
+     * @param float $started_at When the configuration started to build.
+     * @param class-string<T> $config_class
+     * @param class-string<Builder<T>> $builder_class
      */
-    public static function add(float $started_at, string $name, string $builder_class)
+    public static function add(float $started_at, string $config_class, string $builder_class): void
     {
-        self::$entries[] = [ $started_at, microtime(true), $name, $builder_class ];
+        self::$entries[] = [ $started_at, microtime(true), $config_class, $builder_class ];
     }
 }

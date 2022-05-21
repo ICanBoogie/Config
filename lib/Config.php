@@ -15,12 +15,11 @@ use ICanBoogie\Config\Builder;
 use ICanBoogie\Config\NoBuilderDefined;
 use ICanBoogie\Storage\Storage;
 use InvalidArgumentException;
-use LogicException;
 use RuntimeException;
 use Throwable;
 
+use function array_map;
 use function file_exists;
-use function is_a;
 use function rtrim;
 
 use const DIRECTORY_SEPARATOR;
@@ -31,38 +30,58 @@ use const DIRECTORY_SEPARATOR;
 final class Config implements ConfigProvider
 {
     /**
+     * @var string[]
+     *     Where _value_ is a path to a config directory.
+     */
+    private readonly array $paths;
+
+    /**
      * Built configurations.
      *
-     * @var array<string, object>
-     *     Where _key_ is a config identifier and _value_ a configuration.
+     * @var array<class-string, object>
+     *     Where _key_ is a config class and _value_ an instance of that class.
      */
     private array $built = [];
 
     /**
      * @param string[] $paths
-     *     An array of key/value pairs where _key_ is the path to a config directory and
-     *     _value_ is the weight of that path.
-     * @param array<string, class-string<Builder>> $builders
-     * @param Storage|null $cache A cache for configurations.
+     *     Where _value_ is a path to a config directory.
+     *
+     * @param array<class-string, class-string<Builder<object>>> $builders
+     *     Where _key_ is a config class and _value_ a builder class.
+     *
+     * @param Storage|null $cache
+     *     A cache for configurations.
      */
     public function __construct(
-        private readonly array $paths,
+        array $paths,
         private readonly array $builders,
         public ?Storage $cache = null
     ) {
-    }
-
-    public function config_for_class(string $class): object
-    {
-        return $this->built[$class] ??= $this->make_config($class);
+        $this->paths = array_map(
+            fn(string $path) => rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR,
+            $paths
+        );
     }
 
     /**
      * @template T of object
      *
-     * @param class-string<T> $class A config identifier.
+     * @param class-string<T> $class
      *
-     * @throws InvalidArgumentException in attempt to obtain an undefined config.
+     * @return T
+     */
+    public function config_for_class(string $class): object
+    {
+        return $this->built[$class] ??= $this->make_config($class); // @phpstan-ignore-line
+    }
+
+    /**
+     * @template T of object
+     *
+     * @param class-string<T> $class A config class.
+     *
+     * @throws NoBuilderDefined in attempt to obtain an undefined config.
      *
      * @return T
      */
@@ -77,26 +96,28 @@ final class Config implements ConfigProvider
 
         ConfigProfiler::add($started_at, $class, $builder_class);
 
-        return $config;
+        return $config; // @phpstan-ignore-line
     }
 
     private ?string $cache_key = null;
 
     /**
      * Build a cache key according to the current paths and the config name.
+     *
+     * @param class-string $config_class
      */
-    private function get_cache_key(string $name): string
+    private function get_cache_key(string $config_class): string
     {
         $this->cache_key ??= substr(sha1(implode('|', $this->paths)), 0, 8);
 
-        return $this->cache_key . '_' . $name;
+        return $this->cache_key . '_' . $config_class;
     }
 
     /**
      * @template T of object
      *
      * @param class-string<T> $config_class
-     * @param class-string<Builder> $builder_class
+     * @param class-string<Builder<T>> $builder_class
      *
      * @return T
      *
@@ -105,7 +126,7 @@ final class Config implements ConfigProvider
     private function build(string $config_class, string $builder_class): object
     {
         if (array_key_exists($config_class, $this->built)) {
-            return $this->built[$config_class];
+            return $this->built[$config_class]; // @phpstan-ignore-line
         }
 
         $cache = $this->cache;
@@ -113,10 +134,10 @@ final class Config implements ConfigProvider
         $config = $cache?->retrieve($cache_key);
 
         if ($config !== null) {
-            return $this->built[$config_class] = $config;
+            return $this->built[$config_class] = $config; // @phpstan-ignore-line
         }
 
-        $config = $this->build_for_real($config_class, $builder_class);
+        $config = $this->build_for_real($builder_class);
 
         $cache?->store($cache_key, $config);
 
@@ -126,20 +147,15 @@ final class Config implements ConfigProvider
     /**
      * @template T of object
      *
-     * @param class-string<T> $config_class
-     * @param class-string<Builder> $builder_class
+     * @param class-string<Builder<T>> $builder_class
      *
      * @return T
      */
-    private function build_for_real(string $config_class, string $builder_class): object
+    private function build_for_real(string $builder_class): object
     {
-        if (!is_a($builder_class, Builder::class, true)) {
-            throw new LogicException(
-                "Invalid builder for configuration `$config_class`, builders must implement " . Builder::class
-            );
-        }
+        $builder = new $builder_class();
 
-        $builder = $this->resolve_config_builder($builder_class);
+        assert($builder instanceof Builder);
 
         foreach ($this->path_iterator($builder_class::get_fragment_filename()) as $path) {
             try {
@@ -158,25 +174,12 @@ final class Config implements ConfigProvider
     }
 
     /**
-     * @param class-string<Builder> $configurator
-     */
-    private function resolve_config_builder(string $configurator): Builder
-    {
-        return new $configurator();
-    }
-
-    /**
-     * @param string $name Name of the configuration.
-     *
      * @return iterable<string>
      */
-    private function path_iterator(string $name): iterable
+    private function path_iterator(string $filename): iterable
     {
-        $filename = $name . '.php';
-
         foreach ($this->paths as $path) {
-            $path = rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-            $pathname = $path . $filename;
+            $pathname = $path . $filename . '.php';
 
             if (!file_exists($pathname)) {
                 continue;
