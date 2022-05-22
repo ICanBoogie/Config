@@ -20,7 +20,12 @@ use Throwable;
 
 use function array_map;
 use function file_exists;
+use function implode;
 use function rtrim;
+use function sha1;
+use function str_replace;
+use function strtolower;
+use function substr;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -81,9 +86,9 @@ final class Config implements ConfigProvider
      *
      * @param class-string<T> $class A config class.
      *
+     * @return T
      * @throws NoBuilderDefined in attempt to obtain an undefined config.
      *
-     * @return T
      */
     private function make_config(string $class): object
     {
@@ -97,20 +102,6 @@ final class Config implements ConfigProvider
         ConfigProfiler::add($started_at, $class, $builder_class);
 
         return $config; // @phpstan-ignore-line
-    }
-
-    private ?string $cache_key = null;
-
-    /**
-     * Build a cache key according to the current paths and the config name.
-     *
-     * @param class-string $config_class
-     */
-    private function get_cache_key(string $config_class): string
-    {
-        $this->cache_key ??= substr(sha1(implode('|', $this->paths)), 0, 8);
-
-        return $this->cache_key . '_' . $config_class;
     }
 
     /**
@@ -130,18 +121,36 @@ final class Config implements ConfigProvider
         }
 
         $cache = $this->cache;
-        $cache_key = $this->get_cache_key($config_class);
-        $config = $cache?->retrieve($cache_key);
 
-        if ($config !== null) {
-            return $this->built[$config_class] = $config; // @phpstan-ignore-line
+        if ($cache) {
+            $cache_key = $this->get_cache_key($config_class);
+            $config = $cache->retrieve($cache_key);
+
+            if ($config !== null) {
+                return $this->built[$config_class] = $config; // @phpstan-ignore-line
+            }
+
+            $config = $this->build_for_real($builder_class);
+            $cache->store($cache_key, $config);
+        } else {
+            $config = $this->build_for_real($builder_class);
         }
 
-        $config = $this->build_for_real($builder_class);
-
-        $cache?->store($cache_key, $config);
-
         return $this->built[$config_class] = $config;
+    }
+
+    private ?string $cache_key_base = null;
+
+    /**
+     * Build a cache key according to the current paths and the config class.
+     *
+     * @param class-string $config_class
+     */
+    private function get_cache_key(string $config_class): string
+    {
+        $this->cache_key_base ??= substr(sha1(implode('|', $this->paths)), 0, 8);
+
+        return $this->cache_key_base . '_' . str_replace('\\', '_', strtolower($config_class));
     }
 
     /**
