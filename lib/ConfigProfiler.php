@@ -3,6 +3,7 @@
 namespace ICanBoogie;
 
 use ICanBoogie\Config\Builder;
+use ICanBoogie\ConfigProfiler\Record;
 
 /**
  * Collects timing information about configuration builders.
@@ -10,9 +11,9 @@ use ICanBoogie\Config\Builder;
 final class ConfigProfiler
 {
     /**
-     * @var array{ 0: float, 1: float, 2: string, 3: string }
+     * @var Record[]
      */
-    public static array $entries;
+    public static array $records;
 
     /**
      * @template T of object
@@ -23,6 +24,6 @@ final class ConfigProfiler
      */
     public static function add(float $started_at, string $config_class, string $builder_class): void
     {
-        self::$entries[] = [ $started_at, microtime(true), $config_class, $builder_class ];
+        self::$records[] = new Record($started_at, microtime(true) - $started_at, $config_class, $builder_class);
     }
 }
