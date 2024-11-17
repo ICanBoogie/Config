@@ -12,7 +12,7 @@
 namespace ICanBoogie\Config;
 
 /**
- * Config exceptions implement this interface so that they can be easily recognized.
+ * BasicConfigProvider exceptions implement this interface so that they can be easily recognized.
  */
 interface Exception
 {

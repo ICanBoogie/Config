@@ -1,18 +1,11 @@
 <?php
 
-/*
- * This file is part of the ICanBoogie package.
- *
- * (c) Olivier Laviale <olivier.laviale@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
-namespace ICanBoogie;
+namespace ICanBoogie\ConfigProvider;
 
 use ICanBoogie\Config\Builder;
 use ICanBoogie\Config\NoBuilderDefined;
+use ICanBoogie\ConfigProfiler;
+use ICanBoogie\ConfigProvider;
 use ICanBoogie\Storage\Storage;
 use InvalidArgumentException;
 use RuntimeException;
@@ -32,7 +25,7 @@ use const DIRECTORY_SEPARATOR;
 /**
  * Provides low-level configurations.
  */
-final class Config implements ConfigProvider
+final class BasicConfigProvider implements ConfigProvider
 {
     /**
      * @var string[]
@@ -87,8 +80,8 @@ final class Config implements ConfigProvider
      * @param class-string<T> $class A config class.
      *
      * @return T
-     * @throws NoBuilderDefined in attempt to obtain an undefined config.
      *
+     * @throws NoBuilderDefined in an attempt to make an undefined config.
      */
     private function make_config(string $class): object
     {
@@ -112,7 +105,7 @@ final class Config implements ConfigProvider
      *
      * @return T
      *
-     * @throws InvalidArgumentException in attempt to obtain an undefined config.
+     * @throws InvalidArgumentException in an attempt to build an undefined config.
      */
     private function build(string $config_class, string $builder_class): object
     {
@@ -164,12 +157,14 @@ final class Config implements ConfigProvider
     {
         $builder = new $builder_class();
 
-        assert($builder instanceof Builder);
-
         foreach ($this->path_iterator($builder_class::get_fragment_filename()) as $path) {
             try {
                 (function (Builder $builder, string $__FRAGMENT_PATH__): void {
-                    (require $__FRAGMENT_PATH__)($builder);
+                    $configurer = (require $__FRAGMENT_PATH__);
+
+                    assert(is_callable($configurer));
+
+                    $configurer($builder);
                 })(
                     $builder,
                     $path
@@ -190,11 +185,9 @@ final class Config implements ConfigProvider
         foreach ($this->paths as $path) {
             $pathname = $path . $filename . '.php';
 
-            if (!file_exists($pathname)) {
-                continue;
+            if (file_exists($pathname)) {
+                yield $pathname;
             }
-
-            yield $pathname;
         }
     }
 }

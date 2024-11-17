@@ -15,13 +15,15 @@ use LogicException;
 use Throwable;
 
 /**
- * Exception thrown in attempt to build a configuration without builder defined.
+ * Exception thrown in an attempt to build a configuration without builder defined.
  */
 class NoBuilderDefined extends LogicException
 {
-    public function __construct(string $id, Throwable $previous = null)
-    {
-        parent::__construct($this->format_message($id), 500, $previous);
+    public function __construct(
+        public readonly string $id,
+        ?Throwable $previous = null
+    ) {
+        parent::__construct($this->format_message($id), previous: $previous);
     }
 
     private function format_message(string $id): string
