@@ -11,9 +11,9 @@
 
 namespace Test\ICanBoogie;
 
-final class SampleConfig2
+final readonly class SampleConfig2
 {
-    public function __construct(
-    ) {
+    public function __construct()
+    {
     }
 }

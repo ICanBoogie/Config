@@ -1,6 +1,10 @@
-# Migration
+# CHANGELOG
 
-## v5.x to v6.x
+## v5.x to v6.0
+
+### New requirements
+
+Requires PHP 8.2+
 
 ### New features
 
@@ -18,14 +22,14 @@
     ```php
     <?php
 
-    /* @var ICanBoogie\Config $configs */
+    /* @var \ICanBoogie\ConfigProvider\Config $configs */
 
     $app_config = $configs['app'];
     ```
     ```php
     <?php
 
-    /* @var ICanBoogie\Config $configs */
+    /* @var \ICanBoogie\ConfigProvider\Config $configs */
 
     $app_config = $configs->config_for_class(AppConfig::class);
     ```
@@ -35,11 +39,11 @@
 
 ### Deprecated Features
 
-- Support for config synthesizers have been removed. Only Config builders are supported now.
+- Support for config synthesizers has been removed. Only Config builders are supported now.
 
 - `NoFragmentDefined` has been removed.
 
-- The concept of "derived config" (building different config from same fragments) has been dropped.
+- The concept of "derived config" (building different config from the same fragment) has been dropped.
 
 - Removed `Config::add()`, the all configuration paths must be provided during construct.
 

@@ -1,14 +1,5 @@
 <?php
 
-/*
- * This file is part of the ICanBoogie package.
- *
- * (c) Olivier Laviale <olivier.laviale@gmail.com>
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Test\ICanBoogie\Builder;
 
 use ICanBoogie\Config\Builder;
@@ -16,23 +7,35 @@ use Test\ICanBoogie\SampleConfig;
 
 final class SampleBuilder implements Builder
 {
-    static public function get_fragment_filename(): string
+    public static function get_fragment_filename(): string
     {
         return "builder";
     }
 
+    /**
+     * @var string[]
+     */
     private array $strings = [];
+
+    /**
+     * @var int[]
+     */
     private array $integers = [];
+
     public bool $bool = false;
 
-    public function add_string(string $string)
+    public function add_string(string $string): self
     {
         $this->strings[] = $string;
+
+        return $this;
     }
 
-    public function add_int(int $int)
+    public function add_int(int $int): self
     {
         $this->integers[] = $int;
+
+        return $this;
     }
 
     public function build(): SampleConfig
