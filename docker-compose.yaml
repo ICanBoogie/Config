@@ -1,10 +1,10 @@
 ---
 services:
-  app82:
+  app84:
     build:
       context: .
       args:
-        PHP_VERSION: "8.2"
+        PHP_VERSION: "8.4"
     environment:
         PHP_IDE_CONFIG: 'serverName=icanboogie-config'
     volumes:
