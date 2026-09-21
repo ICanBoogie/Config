@@ -13,7 +13,7 @@ use Test\ICanBoogie\SampleConfig2;
 
 final class BasicConfigProviderTest extends TestCase
 {
-    private const PATHS = [
+    private const array PATHS = [
 
         __DIR__ . '/fixtures/config01',
         __DIR__ . '/fixtures/config02',

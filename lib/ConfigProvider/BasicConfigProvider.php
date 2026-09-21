@@ -6,19 +6,12 @@ use ICanBoogie\Config\Builder;
 use ICanBoogie\Config\NoBuilderDefined;
 use ICanBoogie\ConfigProfiler;
 use ICanBoogie\ConfigProvider;
-use ICanBoogie\Storage\Storage;
-use InvalidArgumentException;
 use RuntimeException;
 use Throwable;
 
 use function array_map;
 use function file_exists;
-use function implode;
 use function rtrim;
-use function sha1;
-use function str_replace;
-use function strtolower;
-use function substr;
 
 use const DIRECTORY_SEPARATOR;
 
@@ -47,14 +40,10 @@ final class BasicConfigProvider implements ConfigProvider
      *
      * @param array<class-string, class-string<Builder<object>>> $builders
      *     Where _key_ is a config class and _value_ a builder class.
-     *
-     * @param Storage|null $cache
-     *     A cache for configurations.
      */
     public function __construct(
         array $paths,
         private readonly array $builders,
-        public ?Storage $cache = null
     ) {
         $this->paths = array_map(
             fn(string $path) => rtrim($path, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR,
@@ -90,7 +79,7 @@ final class BasicConfigProvider implements ConfigProvider
 
         $started_at = microtime(true);
 
-        $config = $this->build($class, $builder_class);
+        $config = $this->make_config_with_builder($builder_class);
 
         ConfigProfiler::add($started_at, $class, $builder_class);
 
@@ -100,60 +89,11 @@ final class BasicConfigProvider implements ConfigProvider
     /**
      * @template T of object
      *
-     * @param class-string<T> $config_class
-     * @param class-string<Builder<T>> $builder_class
-     *
-     * @return T
-     *
-     * @throws InvalidArgumentException in an attempt to build an undefined config.
-     */
-    private function build(string $config_class, string $builder_class): object
-    {
-        if (array_key_exists($config_class, $this->built)) {
-            return $this->built[$config_class]; // @phpstan-ignore-line
-        }
-
-        $cache = $this->cache;
-
-        if ($cache) {
-            $cache_key = $this->get_cache_key($config_class);
-            $config = $cache->retrieve($cache_key);
-
-            if ($config !== null) {
-                return $this->built[$config_class] = $config; // @phpstan-ignore-line
-            }
-
-            $config = $this->build_for_real($builder_class);
-            $cache->store($cache_key, $config);
-        } else {
-            $config = $this->build_for_real($builder_class);
-        }
-
-        return $this->built[$config_class] = $config;
-    }
-
-    private ?string $cache_key_base = null;
-
-    /**
-     * Build a cache key according to the current paths and the config class.
-     *
-     * @param class-string $config_class
-     */
-    private function get_cache_key(string $config_class): string
-    {
-        $this->cache_key_base ??= substr(sha1(implode('|', $this->paths)), 0, 8);
-
-        return $this->cache_key_base . '_' . str_replace('\\', '_', strtolower($config_class));
-    }
-
-    /**
-     * @template T of object
-     *
      * @param class-string<Builder<T>> $builder_class
      *
      * @return T
      */
-    private function build_for_real(string $builder_class): object
+    private function make_config_with_builder(string $builder_class): object
     {
         $builder = new $builder_class();
 

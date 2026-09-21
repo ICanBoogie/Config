@@ -8,7 +8,7 @@ PHP 8.4+
 
 ### New features
 
-None
+- Extracted cache concern as `CacheConfigProvider`.
 
 ### Deprecated Features
 

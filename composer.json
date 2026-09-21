@@ -29,8 +29,8 @@
     "icanboogie/storage": "^6.0"
   },
   "require-dev": {
-    "phpstan/phpstan": "^2.0",
-    "phpunit/phpunit": "^11.4"
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^13.3"
   },
   "autoload": {
     "psr-4": {
