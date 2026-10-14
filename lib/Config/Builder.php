@@ -5,7 +5,7 @@ namespace ICanBoogie\Config;
 /**
  * A configuration builder.
  *
- * @template T of object
+ * @template-covariant T of object
  */
 interface Builder
 {

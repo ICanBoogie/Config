@@ -1,7 +1,7 @@
 # Config
 
 [![Release](https://img.shields.io/packagist/v/icanboogie/config.svg)](https://packagist.org/packages/icanboogie/config)
-[![Code Coverage](https://coveralls.io/repos/github/ICanBoogie/Config/badge.svg?branch=6.0)](https://coveralls.io/r/ICanBoogie/Config?branch=6.0)
+[![Code Coverage](https://coveralls.io/repos/github/ICanBoogie/Config/badge.svg?branch=7.0)](https://coveralls.io/r/ICanBoogie/Config?branch=7.0)
 [![Downloads](https://img.shields.io/packagist/dm/icanboogie/config.svg)](https://packagist.org/packages/icanboogie/config)
 
 The `icanboogie/config` package provides an API to build low-level configurations. It is used by
@@ -13,7 +13,9 @@ the [ICanBoogie][] framework to configure its components.
 
 #### Usage
 
-```<?php
+```php
+<?php
+
 /* @var \ICanBoogie\ConfigProvider\BasicConfigProvider $config */
 
 $my_config = $config->config_for_class(MyConfig::class);
@@ -37,9 +39,9 @@ composer require icanboogie/config
 
 The project is continuously tested by [GitHub Actions](https://github.com/ICanBoogie/Config/actions).
 
-[![Tests](https://github.com/ICanBoogie/Config/actions/workflows/test.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Config/actions/workflows/test.yml)
-[![Static Analysis](https://github.com/ICanBoogie/Config/actions/workflows/static-analysis.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Config/actions/workflows/static-analysis.yml)
-[![Code Style](https://github.com/ICanBoogie/Config/actions/workflows/code-style.yml/badge.svg?branch=6.0)](https://github.com/ICanBoogie/Config/actions/workflows/code-style.yml)
+[![Tests](https://github.com/ICanBoogie/Config/actions/workflows/test.yml/badge.svg?branch=7.0)](https://github.com/ICanBoogie/Config/actions/workflows/test.yml)
+[![Static Analysis](https://github.com/ICanBoogie/Config/actions/workflows/static-analysis.yml/badge.svg?branch=7.0)](https://github.com/ICanBoogie/Config/actions/workflows/static-analysis.yml)
+[![Code Style](https://github.com/ICanBoogie/Config/actions/workflows/code-style.yml/badge.svg?branch=7.0)](https://github.com/ICanBoogie/Config/actions/workflows/code-style.yml)
 
 
 

@@ -5,8 +5,12 @@ namespace Test\ICanBoogie\Builder;
 use ICanBoogie\Config\Builder;
 use Test\ICanBoogie\SampleConfig;
 
+/**
+ * @implements Builder<SampleConfig>
+ */
 final class SampleBuilder implements Builder
 {
+    #[\Override]
     public static function get_fragment_filename(): string
     {
         return "builder";
@@ -38,6 +42,7 @@ final class SampleBuilder implements Builder
         return $this;
     }
 
+    #[\Override]
     public function build(): SampleConfig
     {
         return new SampleConfig(

@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## v7.0
+## v7.0.0
 
 ### New Requirements
 
@@ -8,7 +8,7 @@ PHP 8.4+
 
 ### New features
 
-- Extracted cache concern as `CacheConfigProvider`.
+- Extracted cache concern as `CachedConfigProvider`.
 
 ### Deprecated Features
 
@@ -18,13 +18,14 @@ None
 
 None
 
-### Other changes
+### Other Changes
 
-None
+- Replaced PHP Code Sniffer with PHP-CS-Fixer.
+- Tooling updated: PHPUnit 13.4, PHPStan 2.3, CI tests the lowest and the latest dependencies.
 
 
 
-## v6.0
+## v6.0.0
 
 ### New requirements
 
@@ -73,4 +74,4 @@ Requires PHP 8.2+
 
 ### Other Changes
 
-N/A
+None
