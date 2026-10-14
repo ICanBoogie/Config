@@ -2,7 +2,7 @@
 
 Caching configurations removes the cost of building by reusing the result of a previous build. To
 enable caching, wrap a [BasicConfigProvider][] in a [CachedConfigProvider][] that is given a cache
-implementing [Storage][]:
+implementing [Storage][] (provided by `icanboogie/storage`, which you need to require):
 
 ```php
 <?php

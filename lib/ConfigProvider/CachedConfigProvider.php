@@ -28,7 +28,7 @@ final class CachedConfigProvider implements ConfigProvider
 
     /**
      * @param BasicConfigProvider $provider The provider to decorate.
-     * @param Storage $cache A cache for configurations.
+     * @param Storage<string, mixed> $cache A cache for configurations.
      * @param string[] $paths
      *     Where _value_ is a path to a config directory.
      */

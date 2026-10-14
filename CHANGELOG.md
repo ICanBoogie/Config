@@ -16,7 +16,8 @@ None
 
 ### Backward Incompatible Changes
 
-None
+- `icanboogie/storage` is no longer a requirement, it is only needed by `CachedConfigProvider`.
+  Require it in your project if you use that class.
 
 ### Other Changes
 

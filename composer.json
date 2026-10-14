@@ -28,12 +28,15 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "require": {
-    "php": ">=8.4",
-    "icanboogie/storage": "^6.0"
+    "php": ">=8.4"
   },
   "require-dev": {
+    "icanboogie/storage": "^6.0",
     "phpstan/phpstan": "^2.3",
     "phpunit/phpunit": "^13.4"
+  },
+  "suggest": {
+    "icanboogie/storage": "To cache configurations with CachedConfigProvider."
   },
   "autoload": {
     "psr-4": {
