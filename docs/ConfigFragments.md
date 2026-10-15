@@ -82,7 +82,7 @@ use App\Domain\Person;
 use ICanBoogie\Binding\ActiveRecord\ConfigBuilder;
 
 return fn(ConfigBuilder $config) => $config
-    ->use_attributes()
+    ->enable_discovery()
     ->add_connection('primary', 'sqlite:var/db.sqlite')
     ->add_record(Person::class);
 ```
