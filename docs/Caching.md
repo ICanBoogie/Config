@@ -52,7 +52,7 @@ development:
 use ICanBoogie\AppConfigBuilder;
 
 return fn(AppConfigBuilder $config) => $config
-    ->enable_config_caching();
+    ->use_config_caching(true);
 ```
 
 ```php
@@ -62,7 +62,21 @@ return fn(AppConfigBuilder $config) => $config
 use ICanBoogie\AppConfigBuilder;
 
 return fn(AppConfigBuilder $config) => $config
-    ->disable_config_caching();
+    ->use_config_caching(false);
+```
+
+Alternatively, a single fragment can read the value from the environment with [Env](Env.md), no
+profile-specific fragment required:
+
+```php
+<?php
+// app/all/config/app.php
+
+use ICanBoogie\AppConfigBuilder;
+use ICanBoogie\Env;
+
+return fn(AppConfigBuilder $config) => $config
+    ->use_config_caching(Env::bool('APP_CACHE', false));
 ```
 
 [Storage]:              https://icanboogie.org/api/storage/2.0/class-ICanBoogie.Storage.Storage.html

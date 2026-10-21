@@ -127,9 +127,9 @@ final class AppConfigBuilder implements Builder
 
     private bool $cache_configs = false;
 
-    public function enable_config_caching(): self
+    public function use_config_caching(bool $use): self
     {
-        $this->cache_configs = true;
+        $this->cache_configs = $use;
 
         return $this;
     }

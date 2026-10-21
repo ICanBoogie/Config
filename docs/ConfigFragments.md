@@ -99,7 +99,7 @@ again for development:
 use ICanBoogie\AppConfigBuilder;
 
 return fn(AppConfigBuilder $config) => $config
-    ->enable_config_caching();
+    ->use_config_caching(true);
 ```
 
 ```php
@@ -109,7 +109,7 @@ return fn(AppConfigBuilder $config) => $config
 use ICanBoogie\AppConfigBuilder;
 
 return fn(AppConfigBuilder $config) => $config
-    ->disable_config_caching();
+    ->use_config_caching(false);
 ```
 
 [octopath2]: https://github.com/olvlvl/com.olvlvl.octopath2
