@@ -9,6 +9,9 @@ PHP 8.4+
 ### New features
 
 - Extracted cache concern as `CachedConfigProvider`.
+- Added `Env` to read typed environment variables from configuration fragments, e.g.
+  `Env::bool('APP_CACHE', false)`. Variables are required unless a default is provided, `nullable_*`
+  variants return `null` when undefined.
 
 ### Deprecated Features
 
